@@ -1,0 +1,48 @@
+@model List<LlmChatApp.Data.Models.Conversation>
+
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Your Conversations</h1>
+            <div>
+                <form asp-action="NewConversation" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-primary">New Conversation</button>
+                </form>
+                <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-secondary">Logout</a>
+            </div>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="row">
+                @foreach (var conversation in Model)
+                {
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">@conversation.Title</h5>
+                                <p class="card-text text-muted">
+                                    <small>Last updated: @conversation.UpdatedAt.ToString("MMM dd, yyyy HH:mm")</small>
+                                </p>
+                                <a asp-action="Conversation" asp-route-id="@conversation.Id" class="btn btn-primary">Open Chat</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <p class="lead">You don't have any conversations yet.</p>
+                <form asp-action="NewConversation" method="post">
+                    <button type="submit" class="btn btn-primary btn-lg">Start Your First Conversation</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

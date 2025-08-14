@@ -15,7 +15,12 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        var userId = HttpContext.Session.GetString("UserId");
+        if (!string.IsNullOrEmpty(userId))
+        {
+            return RedirectToAction("Index", "Chat");
+        }
+        return RedirectToAction("Login", "Account");
     }
 
     public IActionResult Privacy()
