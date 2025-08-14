@@ -38,7 +38,9 @@ public class LlmService : ILlmService
             
             if (!response.IsSuccessStatusCode)
             {
-                return $"Error: Unable to get response from LLM (Status: {response.StatusCode})";
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to get response from LLM. Status: {StatusCode}, Content: {Content}", response.StatusCode, responseContent);
+                return "Error: Unable to get response from LLM. Please try again later.";
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
