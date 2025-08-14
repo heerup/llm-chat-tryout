@@ -113,7 +113,7 @@ public class ChatController : Controller
         // Update conversation title if it's the first message
         if (conversation.Title == "New Conversation")
         {
-            conversation.Title = message.Length > 50 ? message.Substring(0, 50) + "..." : message;
+            conversation.Title = message.Length > 50 ? message.Substring(0, Math.Min(message.Length, 50)) + "..." : message;
             conversation.UpdatedAt = DateTime.UtcNow;
             await _conversationService.UpdateConversationAsync(conversation);
         }
