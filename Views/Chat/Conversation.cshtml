@@ -43,10 +43,10 @@
                     }
                 </div>
 
-                <form asp-action="SendMessage" method="post" class="d-flex">
+                <form asp-action="SendMessage" method="post" class="d-flex" id="chat-form">
                     <input type="hidden" name="conversationId" value="@Model.Conversation.Id" />
-                    <input type="text" name="message" class="form-control me-2" placeholder="Type your message..." required />
-                    <button type="submit" class="btn btn-primary">Send</button>
+                    <input type="text" name="message" id="message-input" class="form-control me-2" placeholder="Type your message..." required />
+                    <button type="submit" id="send-button" class="btn btn-primary">Send</button>
                 </form>
             </div>
         </div>
@@ -57,5 +57,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     var chatMessages = document.getElementById('chat-messages');
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Handle form submission to disable input during processing
+    var chatForm = document.getElementById('chat-form');
+    var messageInput = document.getElementById('message-input');
+    var sendButton = document.getElementById('send-button');
+    
+    chatForm.addEventListener('submit', function() {
+        // Disable input and button to prevent spam
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+        sendButton.textContent = 'Sending...';
+        
+        // Note: Re-enabling happens automatically when page reloads after form submission
+    });
 });
 </script>

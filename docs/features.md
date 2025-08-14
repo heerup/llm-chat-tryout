@@ -40,7 +40,7 @@ This document provides detailed specifications for each feature of the LLM Chat 
 
 #### Technical Implementation
 - Login page (`/Auth/Login`)
-- Session-based authentication using ASP.NET Core Authentication
+- Persistent session-based authentication (30-day cookies)
 - Simple cookie authentication, no external providers
 - Logout clears session and redirects to home
 
@@ -94,21 +94,21 @@ This document provides detailed specifications for each feature of the LLM Chat 
 
 #### Functional Requirements
 - Send messages to LLM and receive responses
-- Display conversation history
-- Show typing indicator during LLM processing
+- Display conversation history  
+- Disable input during LLM processing to prevent spam
 - Auto-scroll to latest messages
 - Message timestamps
 
 #### Technical Implementation
 - Simple form submission for messages (no WebSockets initially)
-- AJAX for smooth message sending (vanilla JavaScript)
-- Polling for response updates if needed
+- Vanilla JavaScript for form handling and input disabling
 - Message entity with user/assistant distinction
+- Input field and send button disabled during processing
 
 #### User Interface
 - Chat bubble interface (user messages right, assistant left)
 - Text input area with send button
-- Loading indicator during LLM processing
+- Loading state shows "Sending..." on button
 - Scroll container for message history
 
 ### 2.3 Message Persistence
@@ -128,22 +128,23 @@ This document provides detailed specifications for each feature of the LLM Chat 
 
 ## 3. LLM Integration (Ollama)
 
-### 3.1 Ollama Client Integration
+### 3.1 Ollama Chat Integration
 **Priority**: High  
 **Phase**: 1
 
 #### Functional Requirements
 - Connect to local Ollama server (default: http://localhost:11434)
-- Send chat completion requests
-- Handle streaming responses (if available)
-- Model selection (configurable, default model)
+- Send chat completion requests with conversation history
+- Configurable LLM model (default: granite3.1-moe:1b)
+- Context-aware conversations using full message history
 - Request timeout handling
 
 #### Technical Implementation
 - HTTP client service using `Microsoft.Extensions.Http`
+- Uses Ollama `/api/chat` endpoint for conversation context
 - Async operations for all LLM calls
-- Simple retry logic for failed requests
-- Configuration-based Ollama server URL
+- Configuration-based Ollama server URL and model selection
+- Full conversation history sent with each request
 
 #### Error Handling
 - Graceful handling of Ollama server unavailability

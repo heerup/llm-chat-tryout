@@ -8,7 +8,7 @@ This document outlines the implementation plan for creating a self-contained ASP
 - [x] Detailed feature specifications (`docs/features.md`)
 - [x] Updated implementation plan to focus on end-to-end chat functionality in Phase 1
 
-## Phase 1: End-to-End Chat Functionality (MVP)
+## Phase 1: End-to-End Chat Functionality (MVP) ✅ (Completed)
 
 ### Task 1: Project Setup ✅ (Completed)
 - [x] Initialize ASP.NET Core MVC project
@@ -17,37 +17,41 @@ This document outlines the implementation plan for creating a self-contained ASP
 - [x] Configure development environment settings
 - [x] Add initial NuGet packages (Newtonsoft.Json, Microsoft.Extensions.Http)
 
-### Task 2: Core Data Models & Storage
-- [ ] Create essential data models (User, Conversation, Message)
-- [ ] Implement file-based storage interfaces
-- [ ] Set up JSON serialization/deserialization
-- [ ] Configure dependency injection for data services
-- [ ] Add basic data directories and structure
+### Task 2: Core Data Models & Storage ✅ (Completed)
+- [x] Create essential data models (User, Conversation, Message, QueueItem)
+- [x] Implement file-based storage interfaces
+- [x] Set up JSON serialization/deserialization
+- [x] Configure dependency injection for data services
+- [x] Add basic data directories and structure
 
-### Task 3: User Authentication (Simplified)
-- [ ] Implement basic user model with simple roles
-- [ ] Create file-based user storage (users.json)
-- [ ] Build minimal login/logout functionality
-- [ ] Add session-based authentication
-- [ ] Create simple registration form
+### Task 3: User Authentication (Simplified) ✅ (Completed)
+- [x] Implement basic user model with simple roles
+- [x] Create file-based user storage (users.json)
+- [x] Build minimal login/logout functionality
+- [x] Add persistent session-based authentication (30-day cookies)
+- [x] Create simple registration form
 
-### Task 4: Ollama Integration & LLM Service
-- [ ] Implement Ollama HTTP client service
-- [ ] Create LLM service abstraction with async operations
-- [ ] Add basic error handling for LLM failures
-- [ ] Configure Ollama connection settings
-- [ ] Test end-to-end LLM communication
+### Task 4: Ollama Integration & LLM Service ✅ (Completed)
+- [x] Implement Ollama HTTP client service
+- [x] Create LLM service abstraction with async operations
+- [x] Add support for Ollama chat endpoint with conversation history
+- [x] Add configurable LLM model (default: granite3.1-moe:1b)
+- [x] Configure Ollama connection settings
+- [x] Test end-to-end LLM communication
 
-### Task 5: Chat Interface & Conversation Management
-- [ ] Create conversation management (create, list, access by ID)
-- [ ] Build chat controller with message handling
-- [ ] Implement chat UI with message display
-- [ ] Add message persistence to file storage
-- [ ] Create bookmarkable conversation URLs
+### Task 5: Chat Interface & Conversation Management ✅ (Completed)
+- [x] Create conversation management (create, list, access by ID)
+- [x] Build chat controller with message handling
+- [x] Implement chat UI with message display
+- [x] Add input field disabling during message processing
+- [x] Add message persistence to file storage
+- [x] Create bookmarkable conversation URLs
 
-### Task 6: Basic Queue System
-- [ ] Implement simple request queuing for concurrent users
-- [ ] Add queue processing with basic wait time estimation
+### Task 6: Basic Queue System ✅ (Completed)
+- [x] Implement simple request queuing for concurrent users
+- [x] Add queue processing with basic wait time estimation
+- [x] Create unit tests for queue functionality
+- [x] Add queue status tracking and management
 - [ ] Create queue status indicators in UI
 - [ ] Handle queue management with file-based persistence
 

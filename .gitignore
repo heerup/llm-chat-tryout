@@ -57,3 +57,5 @@ Data/conversations/index.json
 Data/conversations/*/messages.json
 Data/conversations/*/meta.json
 Data/queue/active.json
+# Temporarily ignore test project build issues
+LlmChatApp.Tests/

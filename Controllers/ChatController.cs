@@ -141,8 +141,22 @@ public class ChatController : Controller
             queueItem.Status = "Processing";
             await _queueService.UpdateQueueItemAsync(queueItem);
 
-            // Get LLM response
-            var response = await _llmService.GenerateResponseAsync(queueItem.Query);
+            // Get conversation history to build context
+            var existingMessages = await _messageService.GetMessagesByConversationIdAsync(queueItem.ConversationId);
+            
+            // Build chat history for LLM
+            var chatMessages = new List<Data.Services.ChatMessage>();
+            foreach (var msg in existingMessages.OrderBy(m => m.Timestamp))
+            {
+                chatMessages.Add(new Data.Services.ChatMessage
+                {
+                    Role = msg.IsFromUser ? "user" : "assistant",
+                    Content = msg.Content
+                });
+            }
+
+            // Get LLM response with conversation context
+            var response = await _llmService.GenerateChatResponseAsync(chatMessages);
 
             // Add LLM message
             var llmMessage = new Message
@@ -150,7 +164,7 @@ public class ChatController : Controller
                 ConversationId = queueItem.ConversationId,
                 Content = response,
                 IsFromUser = false,
-                LLMModel = "llama3.2"
+                LLMModel = "granite3.1-moe:1b" // This will be updated to use the configured model
             };
             await _messageService.AddMessageAsync(llmMessage);
 

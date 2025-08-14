@@ -4,31 +4,42 @@ namespace LlmChatApp.Data.Services;
 
 public interface ILlmService
 {
-    Task<string> GenerateResponseAsync(string prompt, string model = "granite3.1-moe:1b");
+    Task<string> GenerateResponseAsync(string prompt, string? model = null);
+    Task<string> GenerateChatResponseAsync(List<ChatMessage> messages, string? model = null);
     Task<bool> IsOllamaAvailableAsync();
     Task<List<string>> GetAvailableModelsAsync();
+}
+
+public class ChatMessage
+{
+    public string Role { get; set; } = string.Empty; // "user" or "assistant"
+    public string Content { get; set; } = string.Empty;
 }
 
 public class LlmService : ILlmService
 {
     private readonly HttpClient _httpClient;
     private readonly string _ollamaBaseUrl;
+    private readonly string _defaultModel;
     private readonly ILogger<LlmService> _logger;
 
     public LlmService(HttpClient httpClient, IConfiguration configuration, ILogger<LlmService> logger)
     {
         _httpClient = httpClient;
         _ollamaBaseUrl = configuration.GetValue<string>("Ollama:BaseUrl") ?? "http://localhost:11434";
+        _defaultModel = configuration.GetValue<string>("Ollama:DefaultModel") ?? "granite3.1-moe:1b";
         _logger = logger;
     }
 
-    public async Task<string> GenerateResponseAsync(string prompt, string model = "granite3.1-moe:1b")
+    public async Task<string> GenerateResponseAsync(string prompt, string? model = null)
     {
+        var modelToUse = model ?? _defaultModel;
+        
         try
         {
             var request = new
             {
-                model = model,
+                model = modelToUse,
                 prompt = prompt,
                 stream = false
             };
@@ -53,6 +64,43 @@ public class LlmService : ILlmService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Exception occurred while generating LLM response.");
+            return "Error: Unable to generate response due to an internal error.";
+        }
+    }
+
+    public async Task<string> GenerateChatResponseAsync(List<ChatMessage> messages, string? model = null)
+    {
+        var modelToUse = model ?? _defaultModel;
+        
+        try
+        {
+            var request = new
+            {
+                model = modelToUse,
+                messages = messages.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
+                stream = false
+            };
+
+            var jsonContent = JsonConvert.SerializeObject(request);
+            var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"{_ollamaBaseUrl}/api/chat", content);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to get chat response from LLM. Status: {StatusCode}, Content: {Content}", response.StatusCode, responseContent);
+                return "Error: Unable to get response from LLM. Please try again later.";
+            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<dynamic>(responseJson);
+
+            return result?.message?.content?.ToString() ?? "Error: Invalid response format";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred while generating LLM chat response.");
             return "Error: Unable to generate response due to an internal error.";
         }
     }

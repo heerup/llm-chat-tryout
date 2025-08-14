@@ -38,12 +38,19 @@ Controllers/
 ### 2. Business Logic Layer
 ```
 Services/
-├── IChatService.cs           # Chat session management
-├── ILlmService.cs            # LLM integration (Ollama)
-├── IUserService.cs           # User management
-├── IFeedbackService.cs       # Feedback collection
-└── IQueueService.cs          # Request queuing
+├── IConversationService.cs     # Conversation management
+├── ILlmService.cs             # LLM integration (Ollama with chat endpoint)
+├── IUserService.cs            # User management  
+├── IMessageService.cs         # Message persistence
+├── IAuthService.cs            # Authentication handling
+└── IQueueService.cs           # Request queuing
 ```
+
+#### LLM Integration Design
+- **Chat Endpoint**: Uses Ollama's `/api/chat` endpoint for conversation context
+- **Conversation History**: Full message history passed to LLM for context awareness
+- **Configurable Model**: Default model `granite3.1-moe:1b` configurable via appsettings
+- **Async Processing**: Queue-based processing for concurrent user requests
 
 ### 3. Data Access Layer
 ```
@@ -98,8 +105,8 @@ User Feedback → FeedbackController → FeedbackService → Repository → Stor
 
 ### Authentication
 - **File-based User Store**: Simple JSON file for user credentials
-- **Session-based Authentication**: ASP.NET Core Identity cookies
-- **Role-based Authorization**: User, FeedbackReader, Admin roles
+- **Persistent Session Authentication**: 30-day session cookies for user convenience
+- **Role-based Authorization**: User, Admin roles
 
 ### Data Protection
 - **Password Hashing**: BCrypt for password storage

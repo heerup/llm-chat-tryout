@@ -21,9 +21,11 @@ builder.Services.AddSingleton<ILlmService, LlmService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromDays(30); // 30 days instead of 30 minutes
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = "LlmChatApp.Session";
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
 var app = builder.Build();
