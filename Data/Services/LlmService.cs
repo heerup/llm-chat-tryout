@@ -48,7 +48,8 @@ public class LlmService : ILlmService
         }
         catch (Exception ex)
         {
-            return $"Error: {ex.Message}";
+            _logger.LogError(ex, "Exception occurred while generating LLM response.");
+            return "Error: Unable to generate response due to an internal error.";
         }
     }
 
