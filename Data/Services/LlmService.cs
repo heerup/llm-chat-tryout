@@ -4,7 +4,7 @@ namespace LlmChatApp.Data.Services;
 
 public interface ILlmService
 {
-    Task<string> GenerateResponseAsync(string prompt, string model = "llama3.2");
+    Task<string> GenerateResponseAsync(string prompt, string model = "granite3.1-moe:1b");
     Task<bool> IsOllamaAvailableAsync();
     Task<List<string>> GetAvailableModelsAsync();
 }
@@ -20,7 +20,7 @@ public class LlmService : ILlmService
         _ollamaBaseUrl = configuration.GetValue<string>("Ollama:BaseUrl") ?? "http://localhost:11434";
     }
 
-    public async Task<string> GenerateResponseAsync(string prompt, string model = "llama3.2")
+    public async Task<string> GenerateResponseAsync(string prompt, string model = "granite3.1-moe:1b")
     {
         try
         {

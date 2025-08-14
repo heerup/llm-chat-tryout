@@ -52,3 +52,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+Data/users.json
+Data/conversations/index.json
+Data/conversations/*/messages.json
+Data/conversations/*/meta.json
+Data/queue/active.json
