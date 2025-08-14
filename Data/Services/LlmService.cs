@@ -13,11 +13,13 @@ public class LlmService : ILlmService
 {
     private readonly HttpClient _httpClient;
     private readonly string _ollamaBaseUrl;
+    private readonly ILogger<LlmService> _logger;
 
-    public LlmService(HttpClient httpClient, IConfiguration configuration)
+    public LlmService(HttpClient httpClient, IConfiguration configuration, ILogger<LlmService> logger)
     {
         _httpClient = httpClient;
         _ollamaBaseUrl = configuration.GetValue<string>("Ollama:BaseUrl") ?? "http://localhost:11434";
+        _logger = logger;
     }
 
     public async Task<string> GenerateResponseAsync(string prompt, string model = "granite3.1-moe:1b")
